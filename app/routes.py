@@ -5,23 +5,6 @@ from app.models import User, BlogPost
 from app.linked_list import LinkedList
 from app.hash_table import HashTable
 
-# def create_user_list(users, direction):
-#     ll = LinkedList()
-#     for user in users:
-#         data = {
-#             "id": user.id,
-#             "name": user.name,
-#             "email": user.email,
-#             "address": user.address,
-#             "phone": user.phone,
-#         }
-#         if direction is "start":
-#             ll.insert_beginning(data)
-#         if direction is "end":
-#             ll.insert_end(data)
-#     return ll
-
-
 @app.route('/')
 @app.route('/index')
 def root_route():
@@ -127,7 +110,7 @@ def create_blog_post(user_id):
     return jsonify({
         "message": "successfully added blog",
         "title": ht.retrieve_value("title")
-    })
+    }), 200
 
 @app.route('/api/blog_post/<user_id>', methods=["GET"])
 def get_users_blog_posts(user_id):
