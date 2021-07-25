@@ -1,9 +1,11 @@
+import random
 from app import app, db
 from flask import request, jsonify
 from datetime import datetime
 from app.models import User, BlogPost
 from app.linked_list import LinkedList
 from app.hash_table import HashTable
+from app.binary_search_tree import BinarySearchTree
 
 @app.route('/')
 @app.route('/index')
@@ -114,11 +116,35 @@ def create_blog_post(user_id):
 
 @app.route('/api/blog_post/<user_id>', methods=["GET"])
 def get_users_blog_posts(user_id):
-    pass
+    blog_posts = BlogPost.query.filter_by(user_id=user_id)
+    return jsonify({
+        "message": "Success, all blogs retrieved",
+        "blogs": blog_posts
+    })
 
 @app.route('/api/blog_post/<blog_post_id>', methods=["GET"])
 def get_blog_post(blog_post_id):
-    pass
+    all_posts = BlogPost.query.all()
+    random.shuffle(all_posts)
+
+    bst = BinarySearchTree()
+    for post in all_posts:
+        bst.insert_value({
+            "id": post.id,
+            "title": post.title,
+            "body": post.body,
+            "user_id": post.user_id
+        })
+    post = bst.search_node(blog_post_id)
+    if not post:
+        return jsonify({
+            "message": 'Post could not be found'
+        })
+    return jsonify({
+        "message": "Post found successfully",
+        "post": post
+    })
+
 @app.route('/api/blog_post/<blog_post_id>', methods=["DELETE"])
 def delete_blog_post(blog_post_id):
     pass
