@@ -6,6 +6,7 @@ from app.models import User, BlogPost
 from app.linked_list import LinkedList
 from app.hash_table import HashTable
 from app.binary_search_tree import BinarySearchTree
+from app.stack_custom import Stack
 
 @app.route('/')
 @app.route('/index')
@@ -145,8 +146,19 @@ def get_blog_post(blog_post_id):
         "post": post
     })
 
-@app.route('/api/blog_post/<blog_post_id>', methods=["DELETE"])
-def delete_blog_post(blog_post_id):
-    pass
+@app.route('/api/blog_post/remove_last_10_blogs', methods=["DELETE"])
+def delete_10_posts():
+    posts = BlogPost.query.all()
+    stack = Stack()
+
+    for post in posts:
+        stack.push(post)
+
+    for _ in range(10):
+        to_delete = stack.pop()
+        db.session.delete(to_delete)
+        db.session.commit()
+
+    return jsonify({"message": "Success, deleted last 10 blogs"})
 
 #################### BlogPost routes ###########################
